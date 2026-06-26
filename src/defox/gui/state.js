@@ -52,6 +52,7 @@ export const GUI_STATE = {
         document.getElementById("duplicate_forward").onclick = PRJ.duplicate;
         document.getElementById("duplicate_backward").onclick = PRJ.duplicate_back;
         document.getElementById("extrapolate").onclick = async () => await PRJ.extrapolate();
+        document.getElementById("sweep").onclick = async () => await PRJ.sweep();
 
 
         document.getElementById("infer_layer_order_forward").onclick = (e) => {
@@ -128,9 +129,22 @@ export const GUI_STATE = {
             if (document.getElementById("cp3").style.display == "none") {
                 document.getElementById("state0").setAttribute("style", "display: none;");
                 document.getElementById("cp3").setAttribute("style", "display: default;");
+                document.getElementById("cp_catalyst").setAttribute("style", "display: none;");
             } else {
                 document.getElementById("state0").setAttribute("style", "display: default;");
                 document.getElementById("cp3").setAttribute("style", "display: none;");
+                document.getElementById("cp_catalyst").setAttribute("style", "display: none;");
+            }
+        };
+        document.getElementById("catalyst_layers").onclick = () => {
+            if (document.getElementById("cp_catalyst").style.display == "none") {
+                document.getElementById("cp3").setAttribute("style", "display: none;");
+                document.getElementById("state0").setAttribute("style", "display: none;");
+                document.getElementById("cp_catalyst").setAttribute("style", "display: default;");
+            } else {
+                document.getElementById("cp3").setAttribute("style", "display: default;");
+                document.getElementById("state0").setAttribute("style", "display: none;");
+                document.getElementById("cp_catalyst").setAttribute("style", "display: none;");
             }
         };
 
