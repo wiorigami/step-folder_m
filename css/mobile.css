@@ -99,10 +99,10 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     position: relative;
-    touch-action: none; /* JS接管所有手势 */
-    min-height: 0;
+    touch-action: none;
 }
 
 /* Step nav — thin bar above canvas */
@@ -153,13 +153,9 @@ body {
 
 /* Canvases — fill remaining space */
 .canvases {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     padding: 6px;
-    min-height: 0;
 }
 
 /* SVG paint panels */
