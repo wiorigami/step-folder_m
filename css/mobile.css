@@ -152,32 +152,22 @@ body {
     touch-action: manipulation;
 }
 
-/* Canvases — fill remaining space */
+/* Canvases */
 .canvases {
-    display: flex;
-    flex-direction: column;
     padding: 6px;
 }
 
 /* SVG paint panels */
 .paint {
-    width: 100% !important;
-    max-width: 100%;
-    min-height: 200px;
+    width: 100%;
+    min-height: 300px;
     border: 1px solid var(--bg3);
     border-radius: var(--radius);
-    display: block;
     background: #fff;
-    flex-shrink: 0;
-}
-#state3.paint {
-    min-height: 300px;
     margin-bottom: 6px;
 }
-#state0.paint {
-    min-height: 150px;
-    margin-bottom: 6px;
-}
+#state3.paint { min-height: 350px; }
+#state0.paint { min-height: 180px; }
 
 /* Loading overlay */
 .loading {
