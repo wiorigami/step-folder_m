@@ -3,193 +3,289 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>DEFOX</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1a1a2e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>DEFOX Mobile</title>
     <link rel="icon" href="./icon-512x512.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="./css/fonts.css?1.2.0">
-    <link rel="stylesheet" href="./css/style.css?1.2.0">
-    <link rel="stylesheet" href="./css/style_editor.css?v=1.2.0">
-    <link rel="stylesheet" href="./css/style_axanael.css?v=1.2.0">
-    <link rel="stylesheet" href="./css/style_1200.css?v=1.2.0">
+    <link rel="stylesheet" href="./css/fonts.css">
+    <link rel="stylesheet" href="./css/mobile.css">
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 </head>
 
-<body style="background:darkgray">
-    <div class="openclose">
-        <span>
-            <img src="./icon-512x512.png" alt="DEFOX_icon" style="width: 15px;">
-            <b>DEFOX&nbsp;&nbsp;</b>
-            <button id="new"><i class="bi bi-file-earmark-plus"></i></button>
-            <button id="save_proj"><i class="bi bi-floppy"></i></button>
-            <input type="text" id="proj_name" value="NewProject">
-            <button id="import_proj"><i class="bi bi-upload"></i></button>
-            <button id="import0"><i class="bi bi-plus-square"></i></i></button>
-            <button id="remove"><i class="bi bi-x-square"></i></button>
-            <button id="export"><i class="bi bi-download"></i></button>
-            <select id="export_ext">
-                <option value="cp">.cp</option>
-                <option value="svg">.svg</option>
-                <option value="cell_svg">cell.svg</option>
-                <option value="png">.png</option>
-            </select>
-            <input type="checkbox" id="crease_interp" checked>
-            <label for="crease_interp">Crease Interpolation</label>
+<body>
+
+    <!-- ============================================================
+    HEADER — compact top bar
+    ============================================================ -->
+    <header id="mobile-header">
+        <span class="header-left">
+            <img src="./icon-512x512.png" alt="DEFOX" class="header-icon">
+            <b>DEFOX</b>
         </span>
-    </div>
-    <dialog id="cpeditor" class="cpeditor"></dialog>
+        <span class="header-right">
+            <button id="new" title="New"><i class="bi bi-file-earmark-plus"></i></button>
+            <button id="import_proj" title="Open"><i class="bi bi-upload"></i></button>
+            <button id="save_proj" title="Save"><i class="bi bi-floppy"></i></button>
+            <button id="export" title="Export"><i class="bi bi-download"></i></button>
+        </span>
+    </header>
 
-    <dialog id="axanael" class="axanael"></dialog>
-    <dialog id="gekko" class="gekko"></dialog>
+    <!-- ============================================================
+    CANVAS CONTAINER — fills remaining space
+    ============================================================ -->
+    <main id="canvas-container">
 
-    <span class="step_preview">
-        <div>
-            <b>Steps</b>
-            <button id="prev"><i class="bi bi-caret-left-square"></i></button>
-            <b id="step">1</b>
-            <b>/ </b>
-            <b id="steps">1</b>
-            <button id="next"><i class="bi bi-caret-right-square"></i></button>
-        </div>
-        <div>
+        <!-- Step navigation -->
+        <div class="step-nav-inline">
+            <button id="prev"><i class="bi bi-caret-left-fill"></i></button>
+            <span class="step-info">
+                <b id="step">1</b><b>/</b><b id="steps">1</b>
+            </span>
+            <button id="next"><i class="bi bi-caret-right-fill"></i></button>
             <input id="range_steps" type="range" min="1" max="2" value="2">
         </div>
-    </span>
 
-    <div class="mainpanel">
-        <div id="states" class="panels">
+        <!-- SVG canvas panels -->
+        <div id="states" class="canvases">
             <svg id="state3" class="paint"></svg>
             <svg id="state0" class="paint"></svg>
             <svg id="cp3" class="paint" style="display: none;"></svg>
             <svg id="cp_catalyst" class="paint" style="display: none;"></svg>
         </div>
-        <div class="control_panels">
-            <div id="edit" class="editpanel">
 
-                <span id="edit_cp_b" class="openclose"><b>Crease Pattern</b></span>
-                <span id="edit_cp">
-                    <p>
-                        <button id="opencpeditor" class="opendialog"><i class="bi bi-pencil-square"></i></button>
-                    </p>
-                    <p>
-                        <button id="duplicate_backward"><i class="bi bi-arrow-bar-left"></i><i
-                                class="bi bi-copy"></i></button>
-                        <button id="duplicate_forward"><i class="bi bi-copy"></i><i
-                                class="bi bi-arrow-bar-right"></i></button>
-                    </p>
-                    <p>
-                        <button id="sweep">Sweep Creases </button>
-                        <button id="extrapolate">Extrapolate Creases </button>
-                    </p>
-                </span>
-                <span id="edit_render_b" class="openclose"><b>Render</b></span>
-                <span id="edit_render">
-                    <p>
-                        <button id="cp_layers">CP / Dia</button>
-                        <button id="flip"><i class="bi bi-arrow-down-up"></i></button>
-                        <button id="render_reset">Reset</button>
-                        <button id="infer_prev"><i class="bi bi-box-arrow-in-right"></i></button>
-                        <button id="infer_next"><i class="bi bi-box-arrow-in-left"></i></button>
-                    </p>
-                    <p>
-                        <label for="scale">Zoom</label>
-                        <input id="scale" type="range" max="20" min="0" value="1" step="1">
-                        <button id="scale_reset">Reset</button>
-                    </p>
-                    <p>
-                        <label for="rotate">Angle</label>
-                        <input id="rotate" type="range" max="1" min="0" value="0.5" step="0.125">
-                        <button id="rotate_reset">Reset</button>
-                    </p>
-                    <p>
-                        <label for="clip">Clip</label>
-                        <input id="clip" type="range" max="1" min="0" value="0.0" step="0.001">
-                        <button id="clip_reset">Reset</button>
-                    </p>
-                    <p>
-                        <label for="depth">Depth</label>
-                        <input id="depth" type="range" max="1" min="0" value="0" step="1">
-                        <button id="depth_reset">Reset</button>
-                    </p>
-                </span>
-                <span id="edit_dist_b" class="openclose"><b>Distortion</b></span>
-                <span id="edit_dist" style="display: inline;">
-                    <p>
-                        <button id="catalyst_layers">CCP / CP</button>
-                        <label>Catalyst CP</label>
-                        <button id="opengekko" class="gryph"><i class="bi bi-pencil-square"></i></button>
-                    </p>
-                    <p>
-                        <label for="p0">Level</label>
-                        <input type="range" id="p0" min="0" max="1" value="0.0" step="0.0001">
-                        <button id="p0_reset">Reset</button>
-                    </p>
-                    <p>
-                        <label for="p2">Skew</label>
-                        <input type="range" id="p2" min="0" max="1" value="0.0" step="0.0001">
-                        <button id="p2_reset">Reset</button>
-                    </p>
-                    <p>
-                        <label for="p1">Angle</label>
-                        <input type="range" id="p1" min="0" max="1" value="0.5" step="0.0001">
-                        <button id="p1_reset">Reset</button>
-                    </p>
-                </span>
-                <span id="option_layers_b" class="openclose"><b>Manual Layer Control</b></span>
-                <span id="option_layers">
-                    <div>
-                        <button id="infer_layer_order_forward"><i class="bi bi-box-arrow-in-right"></i></button>
-                        <button id="infer_layer_order_backward"><i class="bi bi-box-arrow-in-left"></i></button>
-                    </div>
+        <!-- Hidden utility SVGs -->
+        <svg id="tutorial" style="display: none;"></svg>
+        <svg id="svgout" style="display: none;"></svg>
+        <svg id="png" style="display: none;"></svg>
+        <svg id="defs"></svg>
+
+        <!-- Loading overlay -->
+        <div id="loading" class="loading"></div>
+    </main>
+
+    <!-- ============================================================
+    BOTTOM TOOLBAR — scrollable, primary actions
+    ============================================================ -->
+    <nav id="mobile-bottom-bar">
+        <button class="tool-btn" id="btn-edit-cp" title="Edit CP"><i class="bi bi-pencil-square"></i> CP</button>
+        <button class="tool-btn" id="btn-flip" title="Flip"><i class="bi bi-arrow-down-up"></i></button>
+        <button class="tool-btn" id="btn-layer-toggle" title="CP/Dia"><i class="bi bi-layers"></i></button>
+        <button class="tool-btn" id="btn-add-symbol" title="Symbols"><i class="bi bi-star"></i> Sym</button>
+        <button class="tool-btn" id="btn-open-settings" title="Settings"><i class="bi bi-sliders"></i> More</button>
+    </nav>
+
+    <!-- ============================================================
+    BOTTOM SHEET — all control panels + page preview
+    ============================================================ -->
+    <aside id="bottom-sheet" class="hidden">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <b>Controls & Settings</b>
+            <button id="btn-close-sheet"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="sheet-content">
+
+            <!-- Project I/O -->
+            <span id="edit_cp_b" class="openclose"><b>Project</b></span>
+            <span id="edit_cp" class="sheet-section">
+                <p>
+                    <input type="text" id="proj_name" value="NewProject">
+                    <button id="import0"><i class="bi bi-plus-square"></i> Import CP</button>
+                    <button id="remove"><i class="bi bi-x-square"></i> Remove</button>
+                </p>
+                <p>
+                    <select id="export_ext">
+                        <option value="cp">.cp</option>
+                        <option value="svg">.svg</option>
+                        <option value="cell_svg">cell.svg</option>
+                        <option value="png">.png</option>
+                    </select>
+                    <input type="checkbox" id="crease_interp" checked>
+                    <label for="crease_interp">Crease Interp</label>
+                </p>
+                <p>
+                    <button id="opencpeditor"><i class="bi bi-pencil-square"></i> Edit CP</button>
+                    <button id="duplicate_backward"><i class="bi bi-arrow-bar-left"></i><i class="bi bi-copy"></i></button>
+                    <button id="duplicate_forward"><i class="bi bi-copy"></i><i class="bi bi-arrow-bar-right"></i></button>
+                </p>
+                <p>
+                    <button id="sweep">Sweep Creases</button>
+                    <button id="extrapolate">Extrapolate Creases</button>
+                </p>
+            </span>
+
+            <!-- Distortion -->
+            <span id="edit_dist_b" class="openclose"><b>Distortion</b></span>
+            <span id="edit_dist" style="display: inline;" class="sheet-section">
+                <p>
+                    <button id="catalyst_layers">CCP / CP</button>
+                    <button id="opengekko" class="gryph"><i class="bi bi-pencil-square"></i></button>
+                </p>
+                <div class="slider-row">
+                    <label for="p0">Level</label>
+                    <input type="range" id="p0" min="0" max="1" value="0.0" step="0.0001">
+                    <button id="p0_reset">Reset</button>
+                </div>
+                <div class="slider-row">
+                    <label for="p2">Skew</label>
+                    <input type="range" id="p2" min="0" max="1" value="0.0" step="0.0001">
+                    <button id="p2_reset">Reset</button>
+                </div>
+                <div class="slider-row">
+                    <label for="p1">Angle</label>
+                    <input type="range" id="p1" min="0" max="1" value="0.5" step="0.0001">
+                    <button id="p1_reset">Reset</button>
+                </div>
+            </span>
+
+            <!-- Render -->
+            <span id="edit_render_b" class="openclose"><b>Render</b></span>
+            <span id="edit_render" class="sheet-section">
+                <p>
+                    <button id="cp_layers">CP / Dia</button>
+                    <button id="flip"><i class="bi bi-arrow-down-up"></i> Flip</button>
+                    <button id="render_reset">Reset View</button>
+                    <button id="infer_prev"><i class="bi bi-box-arrow-in-right"></i></button>
+                    <button id="infer_next"><i class="bi bi-box-arrow-in-left"></i></button>
+                </p>
+                <div class="slider-row">
+                    <label for="scale">Zoom</label>
+                    <input id="scale" type="range" max="20" min="0" value="1" step="1">
+                    <button id="scale_reset">Reset</button>
+                </div>
+                <div class="slider-row">
+                    <label for="rotate">Angle</label>
+                    <input id="rotate" type="range" max="1" min="0" value="0.5" step="0.125">
+                    <button id="rotate_reset">Reset</button>
+                </div>
+                <div class="slider-row">
+                    <label for="clip">Clip</label>
+                    <input id="clip" type="range" max="1" min="0" value="0.0" step="0.001">
+                    <button id="clip_reset">Reset</button>
+                </div>
+                <div class="slider-row">
+                    <label for="depth">Depth</label>
+                    <input id="depth" type="range" max="1" min="0" value="0" step="1">
+                    <button id="depth_reset">Reset</button>
+                </div>
+            </span>
+
+            <!-- Manual Layer Control -->
+            <span id="option_layers_b" class="openclose"><b>Layers</b></span>
+            <span id="option_layers" class="sheet-section">
+                <p>
+                    <button id="infer_layer_order_forward"><i class="bi bi-box-arrow-in-right"></i></button>
+                    <button id="infer_layer_order_backward"><i class="bi bi-box-arrow-in-left"></i></button>
+                </p>
+                <p>
                     <label for="selectG">Group</label>
                     <select id="selectG"></select>
-                    <label for="assign">state</label>
+                    <label for="assign">State</label>
                     <input type="number" id="assign" min="1" max="1" value="1">
                     <a id="assigns">/ 1</a>
-                    <p>
-                        <label for="assign_limit">Assign Limit</label>
-                        <input type="number" id="assign_limit" min="0" value="0" max="1000">
-                    </p>
-                    <p>
-                        <button id="apply_tt">Resolve Cyclic Orders</button>
-                    </p>
-                </span>
-                <span id="edit_symbol_b" class="openclose"><b>Add Symbols</b></span>
-                <span id="edit_symbol">
-                    <p class="tool_buttons">
-                        <button id="axanael_open"><i class="bi bi-pencil-square"></i></button>
-                    </p>
-                </span>
-            </div>
-            <div id="preview" class="preview"></div>
-        </div>
-    </div>
-    <svg id="tutorial" style="display: none;"></svg>
-    <svg id="svgout" style="display: none;"></svg>
-    <svg id="png" style="display: none;"></svg>
-    <svg id="defs"></svg>
-    <div id="loading" class="loading">
+                </p>
+                <p>
+                    <label for="assign_limit">Limit</label>
+                    <input type="number" id="assign_limit" min="0" value="0" max="1000">
+                </p>
+                <p>
+                    <button id="apply_tt">Resolve Cyclic Orders</button>
+                </p>
+            </span>
 
-    </div>
-    <p>
-        <a href="https://youtu.be/MNiAYSwBwfY">Introduction Video</a>
-    </p>
-    <p>
-        <a href="https://github.com/kei-morisue/step-folder">Repository</a>
-    </p>
-    <p>
-        <a
-            href="https://github.com/kei-morisue/step-folder/blob/082abe77fdcd4178888780c07f0a26a9bc11df9c/Affine_Distortions.pdf">Distortion
-            Logic Paper</a>
-    </p>
-    <p>
-        <b>© Kei Morisue 2024, 2026</b>
-    </p>
-    <p>
-        <b>powered by <a href="https://origamimagiro.github.io/flat-folder/">Flat-Folder</a> by Jason S. Ku</b>
-    </p>
+            <!-- Symbols -->
+            <span id="edit_symbol_b" class="openclose"><b>Symbols</b></span>
+            <span id="edit_symbol" class="sheet-section">
+                <p class="tool_buttons">
+                    <button id="axanael_open"><i class="bi bi-pencil-square"></i> Open Symbol Editor</button>
+                </p>
+            </span>
+
+            <!-- Page Preview (populated by JS from preview.xml) -->
+            <span class="openclose"><b>Page Preview</b></span>
+            <div id="preview" class="preview sheet-section"></div>
+        </div>
+    </aside>
+
+    <!-- Sheet overlay (tap to close) -->
+    <div id="sheet-overlay" class="hidden"></div>
+
+    <!-- ============================================================
+    DIALOGS — keep at body level for showModal()
+    ============================================================ -->
+    <dialog id="cpeditor" class="cpeditor"></dialog>
+    <dialog id="axanael" class="axanael"></dialog>
+    <dialog id="gekko" class="gekko"></dialog>
+
+    <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+    <footer id="mobile-footer">
+        <p><a href="https://youtu.be/MNiAYSwBwfY">Intro Video</a> · <a href="https://github.com/kei-morisue/step-folder">Repo</a> · <a href="https://github.com/kei-morisue/step-folder/blob/082abe77fdcd4178888780c07f0a26a9bc11df9c/Affine_Distortions.pdf">Paper</a></p>
+        <p><b>© Kei Morisue 2024, 2026</b></p>
+    </footer>
 
     <script type="module" src="./src/main.js?v1.0.0"></script>
+
+    <!-- Mobile UI glue — wires bottom bar + bottom sheet to existing handlers -->
+    <script>
+    (function() {
+        // Wait for DOM + existing JS to set up handlers
+        function initMobileUI() {
+            // --- Bottom Sheet ---
+            var sheet = document.getElementById('bottom-sheet');
+            var overlay = document.getElementById('sheet-overlay');
+
+            function openSheet() {
+                sheet.classList.remove('hidden');
+                overlay.classList.remove('hidden');
+                requestAnimationFrame(function() {
+                    sheet.classList.add('active');
+                    overlay.classList.add('active');
+                });
+            }
+            function closeSheet() {
+                sheet.classList.remove('active');
+                overlay.classList.remove('active');
+                setTimeout(function() {
+                    sheet.classList.add('hidden');
+                    overlay.classList.add('hidden');
+                }, 300);
+            }
+
+            var settingsBtn = document.getElementById('btn-open-settings');
+            var closeBtn = document.getElementById('btn-close-sheet');
+            if (settingsBtn) settingsBtn.onclick = openSheet;
+            if (closeBtn) closeBtn.onclick = closeSheet;
+            if (overlay) overlay.onclick = closeSheet;
+
+            // --- Bottom Bar Buttons → trigger original buttons ---
+            function wire(id, targetId) {
+                var btn = document.getElementById(id);
+                if (btn) btn.onclick = function() {
+                    var t = document.getElementById(targetId);
+                    if (t) t.click();
+                };
+            }
+            wire('btn-edit-cp', 'opencpeditor');
+            wire('btn-flip', 'flip');
+            wire('btn-layer-toggle', 'cp_layers');
+            wire('btn-add-symbol', 'axanael_open');
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initMobileUI, 500);
+            });
+        } else {
+            setTimeout(initMobileUI, 500);
+        }
+    })();
+    </script>
 </body>
 
 </html>
