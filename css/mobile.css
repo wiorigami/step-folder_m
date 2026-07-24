@@ -31,6 +31,7 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
+    height: 100vh;
     height: 100dvh;
     overflow: hidden;
     background: var(--bg);
@@ -162,14 +163,21 @@ body {
 .paint {
     width: 100% !important;
     max-width: 100%;
+    min-height: 200px;
     border: 1px solid var(--bg3);
     border-radius: var(--radius);
     display: block;
     background: #fff;
     flex-shrink: 0;
 }
-#state3.paint { margin-bottom: 6px; }
-#state0.paint { margin-bottom: 6px; }
+#state3.paint {
+    min-height: 300px;
+    margin-bottom: 6px;
+}
+#state0.paint {
+    min-height: 150px;
+    margin-bottom: 6px;
+}
 
 /* Loading overlay */
 .loading {
