@@ -231,60 +231,68 @@
 
     <script type="module" src="./src/main.js?v1.0.0"></script>
 
-    <!-- Mobile UI glue — wires bottom bar + bottom sheet to existing handlers -->
+    <!-- Mobile UI glue — bottom sheet + bottom bar + touch guard -->
     <script>
-    (function() {
-        // Wait for DOM + existing JS to set up handlers
-        function initMobileUI() {
-            // --- Bottom Sheet ---
-            var sheet = document.getElementById('bottom-sheet');
-            var overlay = document.getElementById('sheet-overlay');
+    document.addEventListener("DOMContentLoaded", function() {
+        // ============================================================
+        // BOTTOM SHEET — slide-up drawer
+        // ============================================================
+        var bottomSheet = document.getElementById("bottom-sheet");
+        var overlay = document.getElementById("sheet-overlay");
+        var btnOpenSettings = document.getElementById("btn-open-settings");
+        var btnCloseSheet = document.getElementById("btn-close-sheet");
 
-            function openSheet() {
-                sheet.classList.remove('hidden');
-                overlay.classList.remove('hidden');
-                requestAnimationFrame(function() {
-                    sheet.classList.add('active');
-                    overlay.classList.add('active');
+        // Remove hidden class so CSS transitions work
+        bottomSheet.classList.remove("hidden");
+        overlay.classList.remove("hidden");
+
+        function openSheet() {
+            bottomSheet.classList.add("active");
+            overlay.classList.add("active");
+        }
+        function closeSheet() {
+            bottomSheet.classList.remove("active");
+            overlay.classList.remove("active");
+        }
+
+        btnOpenSettings.addEventListener("click", openSheet);
+        btnCloseSheet.addEventListener("click", closeSheet);
+        overlay.addEventListener("click", closeSheet);
+
+        // ============================================================
+        // BOTTOM TOOLBAR — active state + bridge to original handlers
+        // ============================================================
+        var toolBtns = document.querySelectorAll(".tool-btn:not(#btn-open-settings)");
+        toolBtns.forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                toolBtns.forEach(function(b) { b.classList.remove("active"); });
+                btn.classList.add("active");
+            });
+        });
+
+        // Bridge new buttons → existing DEFOX handlers (by clicking original hidden buttons)
+        function bridge(newId, originalId) {
+            var newBtn = document.getElementById(newId);
+            if (newBtn) {
+                newBtn.addEventListener("click", function() {
+                    var orig = document.getElementById(originalId);
+                    if (orig) orig.click();
                 });
             }
-            function closeSheet() {
-                sheet.classList.remove('active');
-                overlay.classList.remove('active');
-                setTimeout(function() {
-                    sheet.classList.add('hidden');
-                    overlay.classList.add('hidden');
-                }, 300);
-            }
-
-            var settingsBtn = document.getElementById('btn-open-settings');
-            var closeBtn = document.getElementById('btn-close-sheet');
-            if (settingsBtn) settingsBtn.onclick = openSheet;
-            if (closeBtn) closeBtn.onclick = closeSheet;
-            if (overlay) overlay.onclick = closeSheet;
-
-            // --- Bottom Bar Buttons → trigger original buttons ---
-            function wire(id, targetId) {
-                var btn = document.getElementById(id);
-                if (btn) btn.onclick = function() {
-                    var t = document.getElementById(targetId);
-                    if (t) t.click();
-                };
-            }
-            wire('btn-edit-cp', 'opencpeditor');
-            wire('btn-flip', 'flip');
-            wire('btn-layer-toggle', 'cp_layers');
-            wire('btn-add-symbol', 'axanael_open');
         }
+        bridge("btn-edit-cp", "opencpeditor");
+        bridge("btn-flip", "flip");
+        bridge("btn-layer-toggle", "cp_layers");
+        bridge("btn-add-symbol", "axanael_open");
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(initMobileUI, 500);
-            });
-        } else {
-            setTimeout(initMobileUI, 500);
-        }
-    })();
+        // ============================================================
+        // CANVAS TOUCH GUARD — prevent browser gestures
+        // ============================================================
+        var canvasContainer = document.getElementById("canvas-container");
+        canvasContainer.addEventListener("touchstart", function(e) {
+            if (e.touches.length > 1) e.preventDefault();
+        }, { passive: false });
+    });
     </script>
 </body>
 

@@ -257,9 +257,6 @@ body {
 #bottom-sheet.active {
     transform: translateY(0);
 }
-#bottom-sheet.hidden {
-    display: none;
-}
 
 .sheet-handle {
     width: 36px;
@@ -472,9 +469,6 @@ body {
 #sheet-overlay.active {
     opacity: 1;
     pointer-events: auto;
-}
-#sheet-overlay.hidden {
-    display: none;
 }
 
 /* ================================================================
